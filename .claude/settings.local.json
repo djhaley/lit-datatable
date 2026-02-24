@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm show:*)",
+      "Bash(Remove-Item \"D:\\\\Active Code Projects\\\\lit-datatable\\\\src\\\\iron-flex-import.ts\")",
+      "Bash(yarn install:*)"
+    ]
+  }
+}

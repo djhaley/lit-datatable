@@ -2,12 +2,7 @@ import {
   LitElement, css, html, PropertyValues, TemplateResult
 } from 'lit';
 import { property, customElement, query } from 'lit/decorators.js';
-import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/paper-item/paper-icon-item';
-import '@polymer/paper-item/paper-item-body';
-import '@polymer/iron-icons/iron-icons';
 
-import { ironFlexLayoutAlignTheme, ironFlexLayoutTheme } from '../iron-flex-import';
 import './ld-header-with-sort';
 
 export interface Choice {
@@ -40,9 +35,21 @@ export class LdHeaderWithChoices extends LitElement {
   @query('.dropdown') dropdown!: HTMLDivElement;
 
   static get styles() {
-    const main = css`
+    return css`
       :host {
         display: block;
+      }
+
+      .layout {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .flex {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
       }
 
       .dropdown {
@@ -59,21 +66,75 @@ export class LdHeaderWithChoices extends LitElement {
         margin: var(--dt-dropdown-choice-dropdown-margin, 0);
         color: var(--primary-text-color, black);
         border-radius: var(--dt-dropdown-choice-dropdown-border-radius, 0);
-        box-shadow: var(--dt-dropdown-choice-dropdown-box-shadow, 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24));
       }
 
       .dropdown.hide {
         transform: scaleY(0);
       }
 
-      paper-icon-button[icon="check-box"] {
-        min-width: 40px;
-        color: var(--paper-datatable-api-checked-checkbox-color, --primary-color);
+      .choice-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        cursor: pointer;
       }
 
-      paper-icon-button[icon="check-box-outline-blank"] {
+      .choice-row:hover {
+        background: rgba(0, 0, 0, 0.04);
+      }
+
+      .checkbox-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
         min-width: 40px;
-        color: var(--paper-datatable-api-unchecked-checkbox-color, --primary-text-color);
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .checkbox-btn svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+      }
+
+      .checkbox-btn.checked {
+        color: var(--paper-datatable-api-checked-checkbox-color, var(--primary-color, #1E73BE));
+      }
+
+      .checkbox-btn.unchecked {
+        color: var(--paper-datatable-api-unchecked-checkbox-color, var(--primary-text-color, black));
+      }
+
+      .icon-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--paper-icon-button-color, inherit);
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .icon-btn:hover {
+        color: var(--paper-icon-button-color-hover, inherit);
+        background: rgba(0, 0, 0, 0.08);
+      }
+
+      .icon-btn svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
       }
 
       .selected {
@@ -86,9 +147,15 @@ export class LdHeaderWithChoices extends LitElement {
         margin-left: 24px;
       }
 
+      .choice-icon svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+      }
+
       .label {
         font-size: 13px;
-        font-family: Roboto;
+        font-family: Roboto, sans-serif;
         font-weight: 400;
         margin-right: 16px;
       }
@@ -97,91 +164,87 @@ export class LdHeaderWithChoices extends LitElement {
         margin-right: 10px;
       }
 
-      paper-icon-button {
-        --paper-icon-button: {
-          color: var(--paper-icon-button-color);
-          transition: color 0.3s;
-        }
-
-        --paper-icon-button-hover: {
-          color: var(--paper-icon-button-color-hover);
-        }
-      }
-
       #search-container {
         padding: 6px 6px 6px 10px;
         border-bottom: 1px solid #E0E0E0;
+        display: flex;
+        align-items: center;
       }
 
-      #search-container input{
-          border: none;
-          font-size: var(--header-filter-input-font-size, 16px);
-          width: calc(100% - 30px);
-          outline: none;
-          background: transparent;
-          height: 24px;
-          padding: 0;
-          color: var(--dt-input-text-color, black);
-          box-shadow: none;
-          min-width: 0;
-      }
-      #search-container input:-webkit-autofill,
-      input:-webkit-autofill:hover,
-      input:-webkit-autofill:focus,
-      input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0 30px white inset !important;
+      #search-container input {
+        border: none;
+        font-size: var(--header-filter-input-font-size, 16px);
+        width: calc(100% - 30px);
+        outline: none;
+        background: transparent;
+        height: 24px;
+        padding: 0;
+        color: var(--dt-input-text-color, black);
+        box-shadow: none;
+        min-width: 0;
       }
     `;
-    return [main, ironFlexLayoutTheme, ironFlexLayoutAlignTheme];
   }
 
   render() {
     return html`
-      <div class="layout horizontal center">
-      
-        <div class="layout horizontal center">
-          <span class="flex layout horizontal">
+      <div class="layout">
+        <div class="layout">
+          <span class="flex">
             <slot></slot>
             ${this.selectedChoices && this.selectedChoices.length > 0 ? html`
-            <div class="selected">
-              ${this.countSelected(this.selectedChoices)}
-            </div>` : null}
+              <div class="selected">
+                ${this.countSelected(this.selectedChoices)}
+              </div>` : null}
           </span>
-          <paper-icon-button icon="arrow-drop-down" @tap="${this.openDropdown.bind(this)}"></paper-icon-button>
+          <button class="icon-btn" title="Open" @click="${this.openDropdown}">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10l5 5 5-5z"/>
+            </svg>
+          </button>
         </div>
-      
+
         <div class="dropdown">
           ${this.enableFilter ? html`
             <div id="search-container">
               <input id="filterInput"
-                @input=${this.filterValueChanged.bind(this)}
-                @change=${this.filterValueChanged.bind(this)} 
+                @input="${this.filterValueChanged}"
+                @change="${this.filterValueChanged}"
                 .value="${this.filterValue}" />
-              <iron-icon icon="icons:search"></iron-icon>
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;fill:currentColor;flex-shrink:0">
+                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
             </div>
           ` : null}
           ${this.filteredChoices && this.filteredChoices.map((choice) => html`
-            <div class="layout horizontal center" @tap="${this.tapChoice.bind(this, choice.key)}">
-              <paper-icon-button icon="${this.computeIconName(choice.key, this.selectedChoices)}">
-              </paper-icon-button>
+            <div class="choice-row" @click="${() => this.tapChoice(choice.key)}">
+              <button class="checkbox-btn ${this.isSelected(choice.key) ? 'checked' : 'unchecked'}">
+                ${this.isSelected(choice.key) ? html`
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                ` : html`
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+                  </svg>
+                `}
+              </button>
               ${choice.prefix ? html`<div class="prefix">${choice.prefix}</div>` : null}
-              <div class="label" .style="${choice.style}">
+              <div class="label" .style="${choice.style ?? ''}">
                 ${choice.label}
               </div>
               ${choice.icon ? html`
-                <iron-icon class="choice-icon" .style="${choice.iconStyle}" icon="${choice.icon}"></iron-icon>
+                <div class="choice-icon" .style="${choice.iconStyle ?? ''}">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <use href="#${choice.icon}"/>
+                  </svg>
+                </div>
               ` : null}
             </div>
           `)}
         </div>
-      
       </div>
-  `;
-  }
-
-  static get properties() {
-    return {
-    };
+    `;
   }
 
   constructor() {
@@ -190,11 +253,8 @@ export class LdHeaderWithChoices extends LitElement {
     this.opened = false;
   }
 
-  computeIconName(choice: string, selectedChoices: Array<string>) {
-    if (selectedChoices.indexOf(choice) === -1) {
-      return 'check-box-outline-blank';
-    }
-    return 'check-box';
+  isSelected(key: string) {
+    return this.selectedChoices.indexOf(key) !== -1;
   }
 
   countSelected(selectedChoices: Array<string>) {

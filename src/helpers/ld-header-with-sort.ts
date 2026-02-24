@@ -1,86 +1,79 @@
 import { LitElement, css, html } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import '@polymer/paper-tooltip/paper-tooltip';
-import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/iron-icons/iron-icons';
-import type { Language, Resources } from '../localize';
-import Localize from '../localize';
-
-import { ironFlexLayoutAlignTheme, ironFlexLayoutTheme } from '../iron-flex-import';
 
 @customElement('ld-header-with-sort')
-export class LdHeaderWithSort extends Localize(LitElement) {
+export class LdHeaderWithSort extends LitElement {
   @property({ type: String }) direction: '' | 'asc' | 'desc' = '';
 
-  language: Language | null = 'en';
-
-  resources: Resources | null = {
-    en: {
-      sortAZ: 'Sort A-Z',
-      sortZA: 'Sort Z-A',
-      sortCancel: 'Cancel sort',
-    },
-    'en-en': {
-      sortAZ: 'Sort A-Z',
-      sortZA: 'Sort Z-A',
-      sortCancel: 'Cancel sort',
-    },
-    'en-US': {
-      sortAZ: 'Sort A-Z',
-      sortZA: 'Sort Z-A',
-      sortCancel: 'Cancel sort',
-    },
-    'en-us': {
-      sortAZ: 'Sort A-Z',
-      sortZA: 'Sort Z-A',
-      sortCancel: 'Cancel sort',
-    },
-    fr: {
-      sortAZ: 'Trier de A à Z',
-      sortZA: 'Trier de Z à A',
-      sortCancel: 'Annuler le tri',
-    },
-    'fr-fr': {
-      sortAZ: 'Trier de A à Z',
-      sortZA: 'Trier de Z à A',
-      sortCancel: 'Annuler le tri',
-    },
-  };
-
   static get styles() {
-    const main = css`
+    return css`
       :host {
         display: block;
       }
 
-      .desc, .asc {
+      .layout {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .flex {
+        flex: 1;
+      }
+
+      .sort-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: inherit;
+        border-radius: 50%;
+      }
+
+      .sort-btn:hover {
+        background: rgba(0, 0, 0, 0.08);
+      }
+
+      .sort-btn svg {
+        width: 18px;
+        height: 18px;
         transition: transform 0.2s;
+        fill: currentColor;
       }
 
-      .desc {
-        color: var(--lit-datatable-api-arrow-color, var(--paper-light-green-600));
-        transform: rotate(0deg);
+      .sort-btn.desc svg,
+      .sort-btn.asc svg {
+        color: var(--lit-datatable-api-arrow-color, var(--paper-light-green-600, #7cb342));
       }
 
-      .asc {
-        color: var(--lit-datatable-api-arrow-color, var(--paper-light-green-600));
+      .sort-btn.asc svg {
         transform: rotate(180deg);
       }
     `;
-    return [main, ironFlexLayoutTheme, ironFlexLayoutAlignTheme];
   }
 
   render() {
     return html`
-      <div class="layout horizontal center">
+      <div class="layout">
         <div class="flex">
           <slot></slot>
         </div>
         <slot name="actions"></slot>
-        <paper-icon-button id="sortBtn" icon="arrow-downward" @tap="${this.handleSort.bind(this)}" class="${this.direction}"></paper-icon-button>
-        <paper-tooltip for="sortBtn">${this.getTooltipText(this.direction)}</paper-tooltip>
+        <button
+          class="sort-btn ${this.direction}"
+          title="${this.getTooltipText(this.direction)}"
+          @click="${this.handleSort}">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/>
+          </svg>
+        </button>
       </div>
-  `;
+    `;
   }
 
   handleSort() {
@@ -95,16 +88,12 @@ export class LdHeaderWithSort extends Localize(LitElement) {
         this.direction = '';
         break;
     }
-
     this.dispatchEvent(new CustomEvent('direction-changed', { detail: { value: this.direction } }));
   }
 
   getTooltipText(direction: 'asc' | 'desc' | '') {
-    if (direction === 'asc') {
-      return this.localize('sortCancel');
-    } if (direction === 'desc') {
-      return this.localize('sortAZ');
-    }
-    return this.localize('sortZA');
+    if (direction === 'asc') return 'Cancel sort';
+    if (direction === 'desc') return 'Sort A-Z';
+    return 'Sort Z-A';
   }
 }

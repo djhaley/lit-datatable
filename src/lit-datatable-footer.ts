@@ -2,64 +2,11 @@ import {
   LitElement, css, html
 } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import '@polymer/paper-dropdown-menu/paper-dropdown-menu';
-import type { PaperDropdownMenuElement } from '@polymer/paper-dropdown-menu/paper-dropdown-menu';
-import type { PaperListboxElement } from '@polymer/paper-listbox/paper-listbox';
-import '@polymer/paper-listbox/paper-listbox';
-import '@polymer/paper-item/paper-item';
-import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/paper-tooltip/paper-tooltip';
-import type { Language, Resources } from './localize';
-import Localize from './localize';
-
-import { ironFlexLayoutAlignTheme, ironFlexLayoutTheme } from './iron-flex-import';
 
 type FooterPosition = 'right' | 'left';
 
 @customElement('lit-datatable-footer')
-export class LitDatatableFooter extends Localize(LitElement) {
-  language: Language | null = 'en';
-
-  resources: Resources | null = {
-    en: {
-      nextPage: 'Next page',
-      previousPage: 'Previous page',
-      linesPerPage: 'Lines per page',
-      of: 'of',
-
-    },
-    'en-en': {
-      nextPage: 'Next page',
-      previousPage: 'Previous page',
-      linesPerPage: 'Lines per page',
-      of: 'of',
-    },
-    'en-US': {
-      nextPage: 'Next page',
-      previousPage: 'Previous page',
-      linesPerPage: 'Lines per page',
-      of: 'of',
-    },
-    'en-us': {
-      nextPage: 'Next page',
-      previousPage: 'Previous page',
-      linesPerPage: 'Lines per page',
-      of: 'of',
-    },
-    fr: {
-      nextPage: 'Page suivante',
-      previousPage: 'Page précédente',
-      linesPerPage: 'Lignes par page',
-      of: 'sur',
-    },
-    'fr-fr': {
-      nextPage: 'Page suivante',
-      previousPage: 'Page précédente',
-      linesPerPage: 'Lignes par page',
-      of: 'sur',
-    },
-  };
-
+export class LitDatatableFooter extends LitElement {
   @property({ type: String }) footerPosition: FooterPosition = 'left';
 
   @property({ type: Number }) size = 0;
@@ -73,99 +20,136 @@ export class LitDatatableFooter extends Localize(LitElement) {
   @property({ type: Array }) availableSize: Array<number> = [];
 
   static get styles() {
-    const mainStyle = css`
+    return css`
       :host {
         display: block;
       }
 
       .foot {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
         font-size: 12px;
         font-weight: normal;
         height: 55px;
         border-top: 1px solid;
-        border-color: var(--lit-datatable-divider-color, rgba(0, 0, 0, var(--dark-divider-opacity)));
+        border-color: var(--lit-datatable-divider-color, rgba(0, 0, 0, 0.12));
         padding: 0 14px 0 0;
-        color: var(--lit-datatable-footer-color, rgba(0, 0, 0, var(--dark-secondary-opacity)));
+        color: var(--lit-datatable-footer-color, rgba(0, 0, 0, 0.54));
       }
 
-      .foot .left {
+      .left {
         padding: 0 0 0 14px;
       }
 
-      .foot paper-icon-button {
-        width: 24px;
-        height: 24px;
-        padding: 0;
-        margin-left: 24px;
+      .end-justified {
+        margin-left: auto;
       }
 
-      .foot .status {
+      .controls {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .size-controls {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .status {
         margin: 0 8px 0 32px;
       }
 
-      .foot .size {
+      select {
         width: 64px;
         text-align: right;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--lit-datatable-footer-color, rgba(0, 0, 0, 0.54));
+        background: var(--lit-datatable-footer-background, white);
+        border: none;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        padding: 0 4px 0 0;
       }
 
-      paper-dropdown-menu {
-        color: var(--lit-datatable-footer-color, rgba(0, 0, 0, var(--dark-secondary-opacity)));
+      .nav-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        margin-left: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--lit-datatable-footer-color, rgba(0, 0, 0, 0.54));
+        border-radius: 50%;
       }
-      `;
-    return [mainStyle, ironFlexLayoutAlignTheme, ironFlexLayoutTheme];
+
+      .nav-btn:hover:not(:disabled) {
+        background: rgba(0, 0, 0, 0.08);
+      }
+
+      .nav-btn:disabled {
+        opacity: 0.38;
+        cursor: default;
+      }
+
+      .nav-btn svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+      }
+    `;
   }
 
   render() {
     return html`
-      <style>
-        paper-dropdown-menu {
-          --paper-dropdown-menu: {
-            color: var(--lit-datatable-footer-color, rgba(0, 0, 0, var(--dark-secondary-opacity)));
-          --paper-input-container-color: var(--lit-datatable-footer-color);
-          --paper-input-container-input-color: var(--lit-datatable-footer-color);
-          }
-          --paper-dropdown-menu-input: {
-            color: var(--lit-datatable-footer-color, rgba(0, 0, 0, var(--dark-secondary-opacity)));
-          }
-          --paper-input-container-input: {
-            color: var(--lit-datatable-footer-color, rgba(0, 0, 0, var(--dark-secondary-opacity)));
-          }
-          --paper-listbox-background-color: var(--lit-datatable-footer-background, white);
-          --paper-dropdown-menu-icon: {
-            color: var(--lit-datatable-footer-color, rgba(0, 0, 0, var(--dark-secondary-opacity)));
-          }
-        }
-      </style>
-      <div class="layout horizontal center foot ${this.computePosition(this.footerPosition)}">
-        <div class="${this.footerPosition}">
-          <div class="layout horizontal end-justified center">
-            <div class="layout horizontal center">
-              <div>
-                ${this.localize('linesPerPage')}
-              </div>
-              <div class="size">
-                <paper-dropdown-menu no-label-float vertical-align="bottom">
-                  <paper-listbox attr-for-selected="size" @iron-select="${this.newSizeIsSelected}" selected="${this.size}" slot="dropdown-content">
-                    ${this.availableSize && this.availableSize.map((size) => html`
-                      <paper-item size="${size}">${size}</paper-item>
-                    `)}
-                  </paper-listbox>
-                </paper-dropdown-menu>
-              </div>
+      <div class="foot">
+        <div class="${this.footerPosition} ${this.computePosition(this.footerPosition)}">
+          <div class="controls">
+            <div class="size-controls">
+              <span>Lines per page</span>
+              <select .value="${String(this.size)}" @change="${this.newSizeIsSelected}">
+                ${this.availableSize && this.availableSize.map((s) => html`
+                  <option value="${s}" ?selected="${s === this.size}">${s}</option>
+                `)}
+              </select>
             </div>
             <div class="status">
               ${this.computeCurrentSize(this.page, this.size, this.totalElements)}-${this.computeCurrentMaxSize(this.page, this.size, this.totalElements)}
-              ${this.localize('of')}
+              of
               ${this.totalElements}
             </div>
-            <paper-icon-button id="previousPageBtn" icon="chevron-left" .disabled="${this.prevButtonDisabled(this.page)}" @tap="${this.prevPage}"></paper-icon-button>
-            <paper-tooltip for="previousPageBtn" position="top">${this.localize('previousPage')}</paper-tooltip>
-            <paper-icon-button id="nextPageBtn" icon="chevron-right" .disabled="${this.nextButtonDisabled(this.page, this.totalPages)}" @tap="${this.nextPage}"></paper-icon-button>
-            <paper-tooltip for="nextPageBtn" position="top">${this.localize('nextPage')}</paper-tooltip>
+            <button
+              class="nav-btn"
+              title="Previous page"
+              .disabled="${this.prevButtonDisabled(this.page)}"
+              @click="${this.prevPage}">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+              </svg>
+            </button>
+            <button
+              class="nav-btn"
+              title="Next page"
+              .disabled="${this.nextButtonDisabled(this.page, this.totalPages)}"
+              @click="${this.nextPage}">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
-      `;
+    `;
   }
 
   computeCurrentSize(page: number, size: number, totalElements: number) {
@@ -206,44 +190,18 @@ export class LitDatatableFooter extends Localize(LitElement) {
     return page === 0;
   }
 
-  newSizeIsSelected({ currentTarget }: CustomEvent) {
-    const paperListBox = currentTarget as PaperListboxElement;
-    let newSize = paperListBox.selected;
-    if (newSize) {
-      if (typeof newSize === 'string') {
-        newSize = parseInt(newSize, 10);
-      }
-      if (newSize !== this.size) {
-        this.page = 0;
-        this.size = newSize;
-        this.launchEvent();
-      }
+  newSizeIsSelected(e: Event) {
+    const select = e.target as HTMLSelectElement;
+    const newSize = parseInt(select.value, 10);
+    if (!isNaN(newSize) && newSize !== this.size) {
+      this.page = 0;
+      this.size = newSize;
+      this.launchEvent();
     }
   }
 
   computePosition(position: FooterPosition) {
-    if (position === 'right') {
-      return 'end-justified';
-    }
-    return '';
-  }
-
-  async firstUpdated() {
-    await this.updateComplete;
-    if (this.shadowRoot) {
-      const paperDropdownMenu = this.shadowRoot.querySelector<PaperDropdownMenuElement>('paper-dropdown-menu');
-      if (paperDropdownMenu) {
-        paperDropdownMenu.updateStyles({
-          '--paper-input-container-underline_-_display': 'none',
-          '--paper-input-container-shared-input-style_-_font-weight': '500',
-          '--paper-input-container-shared-input-style_-_text-align': 'right',
-          '--paper-input-container-shared-input-style_-_font-size': '12px',
-          '--paper-input-container-shared-input-style_-_color': 'var(--paper-datatable-navigation-bar-text-color, rgba(0, 0, 0, .54))',
-          '--paper-input-container-input-color': 'var(--paper-datatable-navigation-bar-text-color, rgba(0, 0, 0, .54))',
-          '--disabled-text-color': 'var(--paper-datatable-navigation-bar-text-color, rgba(0, 0, 0, .54))',
-        });
-      }
-    }
+    return position === 'right' ? 'end-justified' : '';
   }
 }
 
