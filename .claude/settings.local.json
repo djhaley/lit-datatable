@@ -3,7 +3,9 @@
     "allow": [
       "Bash(npm show:*)",
       "Bash(Remove-Item \"D:\\\\Active Code Projects\\\\lit-datatable\\\\src\\\\iron-flex-import.ts\")",
-      "Bash(yarn install:*)"
+      "Bash(yarn install:*)",
+      "Bash(yarn build)",
+      "Bash(yarn cache clean:*)"
     ]
   }
 }

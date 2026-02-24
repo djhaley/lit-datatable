@@ -3,9 +3,14 @@
   "version": "1.22.0",
   "description": "lit-datatable is a material design implementation of a data table, powered by lit-element.",
   "type": "module",
-  "main": "lit-datatable.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "scripts": {
-    "build": "tsc"
+    "build": "vite build",
+    "dev": "vite build --watch"
   },
   "dependencies": {
     "@doubletrade/lit-datepicker": "^1.0.0",
@@ -17,6 +22,7 @@
     "@eslint/js": "^9.39.2",
     "eslint": "^9.39.2",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.54.0"
+    "typescript-eslint": "^8.54.0",
+    "vite": "^7.3.1"
   }
 }
